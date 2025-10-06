@@ -606,6 +606,37 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Kembali ke home
     document.getElementById('backToHome').addEventListener('click', backToHome);
+
+    // Mobile: toggle sidebar info
+    const toggleInfoBtn = document.getElementById('toggleInfoBtn');
+    // Create backdrop element for mobile sidebar
+    const backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+
+    function openSidebarMobile() {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) sidebar.classList.add('open');
+        backdrop.classList.add('show');
+    }
+
+    function closeSidebarMobile() {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) sidebar.classList.remove('open');
+        backdrop.classList.remove('show');
+    }
+
+    if (toggleInfoBtn) {
+        toggleInfoBtn.addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (!sidebar) return;
+            if (sidebar.classList.contains('open')) closeSidebarMobile();
+            else openSidebarMobile();
+        });
+    }
+
+    // Close on backdrop click
+    backdrop.addEventListener('click', closeSidebarMobile);
     
     // Form input koordinat manual
     document.getElementById('formKoordinat').addEventListener('submit', function(e) {
