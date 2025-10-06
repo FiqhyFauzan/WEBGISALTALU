@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALTALU - WebGIS Kota Palu</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Home/Landing Page -->
+    <div id="homePage" class="home-page">
+        <div class="home-container">
+            <div class="home-header">
+                <div class="home-logo">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h1>ALTALU</h1>
+                </div>
+                <p class="home-subtitle">WebGIS Pemetaan Lokasi Alfamidi Kota Palu</p>
+            </div>
+            
+            <div class="home-content">
+                <div class="welcome-section">
+                    <h2>Selamat Datang di ALTALU</h2>
+                    <p>Sistem WebGIS untuk pemetaan dan manajemen lokasi Alfamidi di Kota Palu</p>
+                </div>
+                
+                <div class="role-selection">
+                    <div class="role-card" id="userRole">
+                        <div class="role-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Mode Pengguna</h3>
+                        <p>Lihat dan eksplor semua lokasi Alfamidi yang tersedia di Kota Palu</p>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Lihat peta lokasi Alfamidi</li>
+                            <li><i class="fas fa-check"></i> Baca informasi detail setiap lokasi</li>
+                            <li><i class="fas fa-check"></i> Eksplorasi daftar lokasi</li>
+                            <li><i class="fas fa-check"></i> Mode view-only yang aman</li>
+                        </ul>
+                        <button class="btn-role user-btn" id="userBtn">
+                            <i class="fas fa-play"></i> Masuk sebagai Pengguna
+                        </button>
+                    </div>
+                    
+                    <div class="role-card" id="adminRole">
+                        <div class="role-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3>Mode Admin</h3>
+                        <p>Kelola dan tambahkan lokasi Alfamidi baru dengan akses penuh</p>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Tambah lokasi Alfamidi baru</li>
+                            <li><i class="fas fa-check"></i> Hapus lokasi yang sudah ada</li>
+                            <li><i class="fas fa-check"></i> Kelola semua marker di peta</li>
+                            <li><i class="fas fa-check"></i> Akses kontrol admin lengkap</li>
+                        </ul>
+                        <button class="btn-role admin-btn" id="adminBtn">
+                            <i class="fas fa-sign-in-alt"></i> Login sebagai Admin
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="home-footer">
+                    <p><i class="fas fa-info-circle"></i> Pilih peran yang sesuai dengan kebutuhan Anda</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-shield"></i> Login Admin Alfamidi</h2>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="username"><i class="fas fa-user"></i> Username:</label>
+                        <input type="text" id="username" placeholder="Masukkan username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password"><i class="fas fa-lock"></i> Password:</label>
+                        <input type="password" id="password" placeholder="Masukkan password" required>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </form>
+                <div class="demo-accounts">
+                    <h4>Akun Demo:</h4>
+                    <p><strong>Admin:</strong> admin / password123</p>
+                    <p><strong>User Alfamidi:</strong> alfamidi / alfamidi123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="container" style="display: none;">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h1>ALTALU</h1>
+                </div>
+                <p>WebGIS Pemetaan Lokasi Alfamidi Kota Palu</p>
+                <div class="auth-buttons">
+                    <span id="userInfo" class="user-info" style="display: none;"></span>
+                    <button id="loginBtn" class="btn-auth"><i class="fas fa-sign-in-alt"></i> Login Admin</button>
+                    <button id="logoutBtn" class="btn-auth" style="display: none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <button id="backToHome" class="btn-auth"><i class="fas fa-home"></i> Kembali ke Home</button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="map-section">
+                <div class="map-header">
+                    <h2><i class="fas fa-map"></i> Peta Lokasi Alfamidi Kota Palu</h2>
+                    <div class="map-controls">
+                        <button id="zoomIn" class="control-btn"><i class="fas fa-search-plus"></i></button>
+                        <button id="zoomOut" class="control-btn"><i class="fas fa-search-minus"></i></button>
+                        <button id="resetView" class="control-btn"><i class="fas fa-crosshairs"></i></button>
+                    </div>
+                </div>
+                <div id="peta-container">
+                    <div id="peta"></div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="sidebar-content">
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-info-circle"></i> Informasi Peta</h3>
+                        <div class="info-box">
+                            <div class="info-item">
+                                <span class="info-label">Koordinat Terpilih:</span>
+                                <span id="koordinat" class="info-value">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Jumlah Marker:</span>
+                                <span id="jumlahMarker" class="info-value">0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Status:</span>
+                                <span id="status" class="info-value">Mode View Only - Pengguna</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Login Status:</span>
+                                <span id="loginStatus" class="info-value guest">Guest (View Only)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="adminControls" class="sidebar-section" style="display: none;">
+                        <h3><i class="fas fa-plus-circle"></i> Tambah Marker Alfamidi</h3>
+                        <div class="input-koordinat">
+                            <form id="formKoordinat">
+                                <div class="input-group">
+                                    <label for="latitude"><i class="fas fa-latitude"></i> Latitude:</label>
+                                    <input type="text" id="latitude" placeholder="-0.9000" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="longitude"><i class="fas fa-longitude"></i> Longitude:</label>
+                                    <input type="text" id="longitude" placeholder="119.8700" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="namaTitik"><i class="fas fa-tag"></i> Nama Lokasi:</label>
+                                    <input type="text" id="namaTitik" placeholder="Alfamidi ..." required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="alamat"><i class="fas fa-map-marker-alt"></i> Alamat Lengkap:</label>
+                                    <textarea id="alamat" placeholder="Alamat lengkap gerai Alfamidi" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-map-marker-alt"></i> Tambah Lokasi Alfamidi
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="controls">
+                            <button id="tambahMarker" class="btn-secondary">
+                                <i class="fas fa-mouse-pointer"></i> Tambah dari Klik Peta
+                            </button>
+                            <button id="hapusSemua" class="btn-danger">
+                                <i class="fas fa-trash-alt"></i> Hapus Semua Marker
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-list"></i> Daftar Lokasi Alfamidi</h3>
+                        <div class="marker-list">
+                            <div id="daftarMarker">
+                                <div class="marker-item" style="justify-content: center; color: var(--gray-text);">
+                                    Tidak ada lokasi Alfamidi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-content">
+                <p><i class="fas fa-copyright"></i> 2024 WebGIS ALTALU - Pemetaan Lokasi Alfamidi Kota Palu</p>
+                <div class="footer-info">
+                    <span><i class="fas fa-layer-group"></i> Leaflet Maps</span>
+                    <span><i class="fas fa-code"></i> HTML5, CSS3, JavaScript</span>
+                    <span><i class="fas fa-database"></i> Supabase</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>
