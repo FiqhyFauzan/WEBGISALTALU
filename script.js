@@ -1,3 +1,4 @@
+
 // Konfigurasi Supabase
 const supabaseUrl = 'https://uujipziwbrfbuwxkbbbn.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1amlweml3YnJmYnV3eGtiYmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NDU1MzIsImV4cCI6MjA3NTMyMTUzMn0.5qJhxm7U2-DKHLS9C72Gyjly-ApEX02fUBuv_b65bvc';
@@ -637,6 +638,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close on backdrop click
     backdrop.addEventListener('click', closeSidebarMobile);
+
+    // Close button inside sidebar
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', function() {
+            closeSidebarMobile();
+        });
+    }
     
     // Form input koordinat manual
     document.getElementById('formKoordinat').addEventListener('submit', function(e) {
