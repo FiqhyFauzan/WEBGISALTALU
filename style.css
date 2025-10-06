@@ -896,6 +896,58 @@ header p {
     }
 }
 
+/* Mobile-specific: make sidebar act as overlay and add toggle behavior */
+@media (max-width: 768px) {
+    .info-toggle {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 10px;
+        background: var(--white);
+        color: var(--primary-red);
+        border-radius: 6px;
+    }
+
+    /* Sidebar becomes overlay hidden by default */
+    .sidebar {
+        position: fixed;
+        right: 0;
+        top: 70px; /* below header */
+        width: 320px;
+        max-width: 90%;
+        height: calc(100vh - 70px);
+        z-index: 3000;
+        transform: translateX(110%);
+        transition: transform 0.25s ease;
+        box-shadow: -6px 0 20px rgba(0,0,0,0.2);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* When sidebar becomes overlay, make main content full width */
+    .main-content { 
+        margin-right: 0;
+    }
+
+    /* Add a translucent backdrop when sidebar open */
+    .sidebar-backdrop {
+        position: fixed;
+        left: 0;
+        top: 70px;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: rgba(0,0,0,0.35);
+        z-index: 2500;
+        display: none;
+    }
+
+    .sidebar-backdrop.show {
+        display: block;
+    }
+}
+
 @media (max-width: 480px) {
     .home-logo h1 {
         font-size: 1.8rem;
